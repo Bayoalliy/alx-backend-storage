@@ -9,6 +9,7 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://127.0.0.1:27017')
 logs = client.logs.nginx
 
+"""ghshdjd dududuf udud"""
 print('{} logs'.format(logs.count_documents({})))
 print('Methods:')
 print('\tmethod GET: {}'.format(logs.count_documents({'method': 'GET'})))
