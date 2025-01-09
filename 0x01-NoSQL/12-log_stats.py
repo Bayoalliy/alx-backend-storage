@@ -21,13 +21,21 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://127.0.0.1:27017')
 logs = client.logs.nginx
 
-if __name__ == '__main__':
+
+def print_nginx_logs():
+    """this function prints nginx logs based on request methods"""
     print('{} logs'.format(logs.count_documents({})))
     print('Methods:')
-    print('    method GET: {}'.format(logs.count_documents({'method': 'GET'})))
-    print('    method POST: {}'.format(logs.count_documents({'method': 'POST'})))
-    print('    method PUT: {}'.format(logs.count_documents({'method': 'PUT'})))
-    print('    method PATCH: {}'.format(logs.count_documents({'method': 'PATCH'})))
-    print('    method DELETE: {}'.format(logs.count_documents({'method': 'DELETE'})))
+    print('\tmethod GET: {}'.format(logs.count_documents({'method': 'GET'})))
+    print('\tmethod POST: {}'.format(logs.count_documents({'method': 'POST'})))
+    print('\tmethod PUT: {}'.format(logs.count_documents({'method': 'PUT'})))
+    print('\tmethod PATCH: {}'.format(
+        logs.count_documents({'method': 'PATCH'})))
+    print('\tmethod DELETE: {}'.format(
+        logs.count_documents({'method': 'DELETE'})))
     print('{} status check'.format(logs.count_documents(
-    {'method': 'GET', 'path': {'$regex': '/status'}})))
+        {'method': 'GET', 'path': '/status'})))
+
+
+if __name__ == '__main__':
+    print_nginx_logs()
