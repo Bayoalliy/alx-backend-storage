@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Write a Python script that provides some stats about Nginx
+"""
+Write a Python script that provides some stats about Nginx
 logs stored in MongoDB:
 
 Database: logs
@@ -14,6 +15,9 @@ one line with the number of documents with:
 method=GET
 path=/status
 You can use this dump as data sample: dump.zip
+
+Improve 12-log_stats.py by adding the top 10 of the most
+present IPs in the collection nginx of the database logs
 """
 from pymongo import MongoClient
 
@@ -35,10 +39,31 @@ def print_nginx_logs():
         logs.count_documents({'method': 'DELETE'})))
     print('{} status check'.format(logs.count_documents(
         {'method': 'GET', 'path': '/status'})))
-    print(logs.find_one({'method': 'POST'}))
 
-def get_ips():
+
+def get_top_ips():
     """return top 10 ips"""
+    ips = logs.aggregate([
+        {
+            '$group': {
+                '_id': '$ip',
+                'num_ip': {'$sum': 1}
+            }
+        },
+        {
+            '$sort': {'num_ip': -1}
+        },
+        {
+            '$limit': 10
+        }
+    ])
+
+    print('IPs:')
+
+    for ip in ips:
+        print('\t{}: {}'.format(ip['_id'], ip['num_ip']))
+
 
 if __name__ == '__main__':
     print_nginx_logs()
+    get_top_ips()
