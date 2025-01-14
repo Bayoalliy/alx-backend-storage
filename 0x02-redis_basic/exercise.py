@@ -23,9 +23,24 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data in redis database"""
         u_id = str(uuid.uuid4())
         self._redis.set(u_id, data)
         return u_id
+
+    def get(self, key, fn):
+        """gets a value from redis db using its key"""
+        res = self._redis.get(key)
+        if fn:
+            res = fn(res)
+        return res
+
+    def get_int(self, key):
+        """parameterize get with int function"""
+        return self.get(key, int)
+
+    def get_str(self, key):
+        """parameterize get with string function"""
+        def fn(d): d.decode("utf-8")
+        return self.get(key, fn)
