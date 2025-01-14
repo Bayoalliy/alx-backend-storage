@@ -15,6 +15,18 @@ Remember that data can be a str, bytes, int or float.
 import redis
 import uuid
 from typing import Union
+from functools import wraps
+
+
+def count_calls(Callable):
+    """decorator function"""
+    @wraps(Callable)
+    def wrapper_func(self, *args, **kwargs):
+        """wrapper function"""
+        key = Callable.__qualname__
+        self._redis.incrby(key, 1)
+        return Callable(self, *args, **kwargs)
+    return wrapper_func
 
 
 class Cache:
@@ -23,6 +35,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data in redis database"""
         u_id = str(uuid.uuid4())
