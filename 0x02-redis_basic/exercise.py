@@ -29,7 +29,7 @@ class Cache:
         self._redis.set(u_id, data)
         return u_id
 
-    def get(self, key, fn):
+    def get(self, key, fn=None):
         """gets a value from redis db using its key"""
         res = self._redis.get(key)
         if fn:
