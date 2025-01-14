@@ -14,18 +14,18 @@ Remember that data can be a str, bytes, int or float.
 
 import redis
 import uuid
-from typing import Union
+from typing import Union, Callable
 from functools import wraps
 
 
-def count_calls(Callable):
+def count_calls(method: Callable) -> Callable:
     """decorator function"""
-    @wraps(Callable)
+    @wraps(method)
     def wrapper_func(self, *args, **kwargs):
         """wrapper function"""
-        key = Callable.__qualname__
+        key = method.__qualname__
         self._redis.incrby(key, 1)
-        return Callable(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
     return wrapper_func
 
 
