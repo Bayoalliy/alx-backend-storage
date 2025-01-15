@@ -18,6 +18,20 @@ from typing import Union, Callable
 from functools import wraps
 
 
+def call_history(method: Callable) -> Callable:
+    """decorator function storing call history"""
+    @wraps(method)
+    def wrapper_fun(self, *args, **kwargs):
+        """wrapper function"""
+        inputs_key = method.__qualname__ + ':inputs'
+        outputs_key = method.__qualname__ + ':outputs'
+        self._redis.rpush(inputs_key, str(args))
+        res = method(self, *args, **kwargs)
+        self._redis.rpush(outputs_key, res)
+        return res
+    return wrapper_fun
+
+
 def count_calls(method: Callable) -> Callable:
     """decorator function"""
     @wraps(method)
@@ -35,6 +49,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data in redis database"""
