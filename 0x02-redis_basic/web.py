@@ -19,9 +19,11 @@ import redis
 import requests
 
 
+r = redis.Redis()
+
+
 def get_page(url: str) -> str:
     """obtain the HTML content of a particular URL and returns it"""
-    r = redis.Redis()
     if r.get(url):
         r.incr(f"count:{url}")
         return r.get(url)
