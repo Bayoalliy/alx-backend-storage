@@ -49,7 +49,7 @@ def replay(method):
     num_calls = r.get(method.__qualname__).decode('utf-8')
     inputs = r.lrange(method.__qualname__ + ":inputs", 0, -1)
     outputs = r.lrange(method.__qualname__ + ":outputs", 0, -1)
-    print(f"{method.__qualname__} was called {num_calls} times")
+    print(f"{method.__qualname__} was called {num_calls} times:")
 
     for key, value in zip(outputs, inputs):
         k = key.decode('utf-8')
