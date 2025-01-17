@@ -30,4 +30,4 @@ def get_page(url: str) -> str:
     res = requests.get(url)
     r.set(url, str(res), ex=10)
     r.incr(f"count:{url}")
-    return res
+    return res.decode('utf-8')
