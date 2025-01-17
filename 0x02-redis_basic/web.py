@@ -28,5 +28,6 @@ def get_page(url: str) -> str:
 
     res = requests.get(url)
     r.set(f"cached:{url}", str(res), ex=30)
+    r.expire(f"cached:{url}")
     r.incr(f"count:{url}")
     return res
