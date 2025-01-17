@@ -33,3 +33,6 @@ def get_page(url: str) -> str:
     r.expire(f"cached:{url}")
     r.incr(f"count:{url}")
     return res
+
+if __name__ == '__main__':
+    get_page('http://slowwly.robertomurray.co.uk')
