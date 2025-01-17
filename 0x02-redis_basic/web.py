@@ -31,6 +31,3 @@ def get_page(url: str) -> str:
     r.set(url, str(res), ex=10)
     r.incr(f"count:{url}")
     return res
-
-
-get_page('http://slowwly.robertomurray.co.uk')
