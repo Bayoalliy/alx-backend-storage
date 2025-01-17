@@ -16,7 +16,6 @@ Tip: Use http://slowwly.robertomurray.co.uk to simulate a
 slow response and test your caching.
 """
 import redis
-from typing import Union, Callable
 import requests
 
 
@@ -28,6 +27,6 @@ def get_page(url: str) -> str:
         return r.get(url)
 
     res = requests.get(url)
-    r.set(url, str(res), ex=10)
+    r.set(f"cached:{url}", str(res), ex=30)
     r.incr(f"count:{url}")
-    return res.decode('utf-8')
+    return res
